@@ -1,0 +1,25 @@
+================Task 1================
+Model 1:
+i = 23	Mean squared error	6.050370379164231
+--------------------
+Model 2:
+i = 23	Mean squared error	22.250283203125
+
+>> In this task, I use RandomForestRegressor as the regression model. 
+>> The width of the forest is 100, and the random seed is as 42.
+>> Due to I have set the random seed, the results are reproducable. 
+>> I also use RFE to reduce features. It helps me selecting 23 features among 56 features.
+>> (some categorical features would expand to several features due to the one hot encoding)
+>> these 23 featrures are as below : 
+['num__age' 'num__Medu' 'num__Fedu' 'num__traveltime' 'num__studytime'
+ 'num__failures' 'num__famrel' 'num__freetime' 'num__goout' 'num__Dalc'
+ 'num__Walc' 'num__health' 'num__absences' 'cat__school_GP' 'cat__sex_F'
+ 'cat__Mjob_other' 'cat__Fjob_services' 'cat__reason_other'
+ 'cat__reason_reputation' 'cat__edusupport_family' 'cat__higher_no'
+ 'cat__higher_yes' 'cat__romantic_no']
+>> Besides, I do the normalization for numerical features. 
+>> I scaled them into the range(-1, 1)
+>> It would take about 10 more seconds to train the model
+
+
+
