@@ -26,36 +26,16 @@ class Task1:
     
     def train(self, X, y, n=27):
         # Identifying categorical columns to be one-hot encoded
-        categorical_features = X.select_dtypes(include=['object']).columns
-        numerical_features = X.select_dtypes(exclude=['object']).columns
 
-        base_model = RandomForestRegressor(n_estimators=40, random_state=42)
+        base_model = RandomForestRegressor(n_estimators=100, random_state=42)
         rfe = RFE(estimator=base_model, n_features_to_select=n)
-        # Creating the preprocessing pipeline
-        preprocessor = ColumnTransformer(
-            transformers=[
-                ('num', MinMaxScaler(feature_range=(-1, 1)), numerical_features),
-                ('cat', OneHotEncoder(handle_unknown='ignore'), categorical_features)
-            ]
-        )
-
-        # Creating the modeling pipeline
-        pipeline = Pipeline(steps=[
-            ('preprocessor', preprocessor),
-            ('rfe', rfe),
-            ('model', base_model)
-        ])
-        pipeline.fit(X, y)
-
-        selected_features_mask = pipeline.named_steps['rfe'].support_
-        preprocessed_X = pipeline.named_steps['preprocessor'].transform(X)
-        all_feature_names = pipeline.named_steps['preprocessor'].get_feature_names_out()
-        selected_features = all_feature_names[selected_features_mask]
-        print(selected_features)
-        # selected_features = X.columns[selected_features_mask]
-        # print("selected features:", selected_features)
-        # print("ranking of features:", selected_features_ranking)
-        return pipeline
+        rfe.fit(X, y)
+        selected_features = X.columns[rfe.support_]
+        #print("Selected features:", selected_features)
+        X_selected = X[selected_features]
+        model = RandomForestRegressor(n_estimators=100, random_state=42)
+        model.fit(X_selected, y)
+        return model, selected_features
         
 
     def model_1_run(self):
@@ -63,14 +43,24 @@ class Task1:
         # Train the model 1 with your best hyper parameters (if have) and features on training data.
         X = self.train_data.drop('G3', axis=1)
         y = self.train_data['G3']
-        for i in range(23, 24):
-            pipeline = self.train(X, y, i)
-            scores = cross_val_score(pipeline, X, y, cv=10, scoring='neg_mean_squared_error')
+        min_avg_mse = 99999999
+        self.optimized_feature_number = -1
+        self.optimized_features = None
+        for i in range(1, len(X.columns)+1):
+            model, selected_features = self.train(X, y, i)
+            scores = cross_val_score(model, X[selected_features], y, cv=10, scoring='neg_mean_squared_error')
             mse_scores = -scores
             # Computing the average RMSE across all folds
-            average_mse = np.mean(mse_scores)
+            average_mse = np.mean(mse_scores*400)
             # Evaluate learned model on testing data, and print the results.
+            if average_mse < min_avg_mse:
+                min_avg_mse = average_mse
+                self.optimized_feature_number = i
+                self.optimized_features = selected_features
             print(f"{i = }\tMean squared error\t" + str(average_mse))
+        print(f"Mean squared error\t" + str(min_avg_mse))
+        print(f"{self.optimized_feature_number = }")
+        print(f"{self.optimized_features = }")
         return
 
     def model_2_run(self):
@@ -78,17 +68,17 @@ class Task1:
         # Train the model 2 with your best hyper parameters (if have) and features on training data.
         X = self.train_data.drop('G3', axis=1)
         y = self.train_data['G3']
-        for i in range(23, 24):
+        model, selected_featrures = self.train(X[self.optimized_features], y, self.optimized_feature_number)
+        X_test_actual = self.test_data.drop('G3', axis=1)
+        y_test_actual = self.test_data['G3']
+        for feature in list(selected_featrures):
+            if feature not in X_test_actual.columns:
+                X_test_actual[feature] = False
+        y_test_pred = model.predict(X_test_actual[selected_featrures])
+        mse = mean_squared_error(y_test_actual*20, y_test_pred*20)
 
-            pipeline = self.train(X, y, i)
-            X_test_actual = self.test_data.drop('G3', axis=1)
-            y_test_actual = self.test_data['G3']
-
-            y_test_pred = pipeline.predict(X_test_actual)
-            mse = mean_squared_error(y_test_actual, y_test_pred)
-
-            # Evaluate learned model on testing data, and print the results.
-            print(f"{i = }\tMean squared error\t" + str(mse))
+        # Evaluate learned model on testing data, and print the results.
+        print(f"Mean squared error\t" + str(mse))
         return
 
 
