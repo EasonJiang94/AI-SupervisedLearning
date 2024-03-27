@@ -46,7 +46,7 @@ class Task1:
         min_avg_mse = 99999999
         self.optimized_feature_number = -1
         self.optimized_features = None
-        for i in range(1, len(X.columns)+1):
+        for i in reversed(range(1, len(X.columns)+1)):
             model, selected_features = self.train(X, y, i)
             scores = cross_val_score(model, X[selected_features], y, cv=10, scoring='neg_mean_squared_error')
             mse_scores = -scores

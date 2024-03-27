@@ -1,5 +1,7 @@
 import pandas as pd
 import numpy as np
+from sklearn.preprocessing import PolynomialFeatures
+
 
 def sigmoid(x):
     return 2 / (1 + np.exp(-x)) - 1
@@ -39,7 +41,8 @@ class DatasetParser(object):
         self.data = pd.read_csv(path, sep="\t", header=None, names=DatasetParser.columns)
         self._convert_binary_to_boolean()
         self._apply_one_hot_encoding()
-
+        self._normalize_data()
+        self._feature_interaction_and_polynomial_features()
     
     def _convert_binary_to_boolean(self):
         for column in self.binary_columns:
@@ -64,12 +67,29 @@ class DatasetParser(object):
             self.data[feature] = sigmoid((self.data[feature] - DatasetParser.range_info[feature]["min"]) / 
                                          (DatasetParser.range_info[feature]["max"] - DatasetParser.range_info[feature]["min"]))
         
-        # 
-        self.data['absences'] = (self.data['absences'] - DatasetParser.range_info['absences']["min"]) / (self.data['absences']["max"] - DatasetParser.range_info['absences']["min"])
+        self.data['absences'] = (self.data['absences'] - DatasetParser.range_info['absences']["min"]) / (DatasetParser.range_info['absences']["max"] - DatasetParser.range_info['absences']["min"])
         
         # 将G3归一化到0到1之间
-        self.data['G3'] = (self.data['G3'] - DatasetParser.range_info['G3']["min"]) / (self.data['G3']["max"] - DatasetParser.range_info['G3']["min"])
+        self.data['G3'] = (self.data['G3'] - DatasetParser.range_info['G3']["min"]) / (DatasetParser.range_info['G3']["max"] - DatasetParser.range_info['G3']["min"])
+    
+    def _feature_interaction_and_polynomial_features(self):
+        self.data['parents_education'] = self.data['Medu'] * self.data['Fedu']
+        self.data['famrel_freetime'] = self.data['famrel'] * self.data['freetime']
+        
+        continuous_features = ['age', 'traveltime', 'studytime', 'absences']
+        pf = PolynomialFeatures(degree=2, include_bias=False)
+        
 
+        continuous_data = self.data[continuous_features]
+        poly_features = pf.fit_transform(continuous_data)
+        
+        poly_features = np.delete(poly_features, [i for i in range(len(continuous_features))], axis=1)
+        
+        for i in range(poly_features.shape[1]):
+            self.data[f'poly_{i}'] = poly_features[:, i]
+
+        features_to_remove = ['Medu', 'Fedu', 'famrel', 'freetime'] 
+        self.data.drop(columns=features_to_remove, inplace=True)
 
 if __name__ == "__main__":
     # train = "data/assign3_students_train.txt"

@@ -1,4 +1,6 @@
 ================Task 1================
+
+Experiment 1 : 
 Model 1:
 i = 23	Mean squared error	6.050370379164231
 --------------------
@@ -21,5 +23,180 @@ i = 23	Mean squared error	22.250283203125
 >> I scaled them into the range(-1, 1)
 >> It would take about 10 more seconds to train the model
 
+Experiment 2 : 
+================Task 1================
+Model 1:
+i = 1   Mean squared error      7.089611238770128
+i = 2   Mean squared error      7.637682075498438
+i = 3   Mean squared error      7.746573946079392
+i = 4   Mean squared error      8.454337290137829
+i = 5   Mean squared error      9.035146769007497
+i = 6   Mean squared error      8.528331753354717
+i = 7   Mean squared error      8.291501058583515
+i = 8   Mean squared error      7.873245186442723
+i = 9   Mean squared error      7.400858788941369
+i = 10  Mean squared error      7.388126063575557
+i = 11  Mean squared error      6.935939421988441
+i = 12  Mean squared error      6.773559348425222
+i = 13  Mean squared error      6.411914260666277
+i = 14  Mean squared error      6.321714713617769
+i = 15  Mean squared error      6.171524289888955
+i = 16  Mean squared error      6.081452378725892
+i = 17  Mean squared error      6.015909631794273
+i = 18  Mean squared error      5.9451361104617195
+i = 19  Mean squared error      5.915377971946231
+i = 20  Mean squared error      5.920849424313267
+i = 21  Mean squared error      5.940920046756283
+i = 22  Mean squared error      5.881622706019873
+i = 23  Mean squared error      5.853391323787259
+i = 24  Mean squared error      5.85507754529515
+i = 25  Mean squared error      5.773024155464641
+i = 26  Mean squared error      5.818939336645237
+i = 27  Mean squared error      5.816001893629456
+i = 28  Mean squared error      5.828644576271186
+i = 29  Mean squared error      5.818890084745761
+i = 30  Mean squared error      5.842908068381063
+i = 31  Mean squared error      5.811675450029222
+i = 32  Mean squared error      5.8310703477498524
+i = 33  Mean squared error      5.9179706136762125
+i = 34  Mean squared error      5.87920033898305
+i = 35  Mean squared error      5.913230338983049
+i = 36  Mean squared error      5.8596146610169475
+i = 37  Mean squared error      5.850752133255406
+i = 38  Mean squared error      5.898189535359438
+i = 39  Mean squared error      5.851188427819989
+i = 40  Mean squared error      5.844506230274693
+i = 41  Mean squared error      5.845513854471068
+i = 42  Mean squared error      5.901515745178258
+i = 43  Mean squared error      5.886120561075394
+i = 44  Mean squared error      5.881298582700174
+i = 45  Mean squared error      5.936038796025715
+i = 46  Mean squared error      5.857915280537696
+i = 47  Mean squared error      5.858247516072472
+Mean squared error      5.773024155464641
+self.optimized_feature_number = 25
+self.optimized_features = Index(['school', 'sex', 'age', 'address', 'Medu', 'Fedu', 'traveltime',
+       'studytime', 'failures', 'higher', 'internet', 'romantic', 'famrel',
+       'freetime', 'goout', 'Dalc', 'Walc', 'health', 'absences', 'Mjob_other',
+       'Fjob_services', 'reason_other', 'reason_reputation',
+       'edusupport_family', 'edusupport_no'],
+      dtype='object')
+--------------------
+Model 2:
+Selected features: Index(['school', 'sex', 'age', 'address', 'Medu', 'Fedu', 'traveltime',
+       'studytime', 'failures', 'higher', 'internet', 'romantic', 'famrel',
+       'freetime', 'goout', 'Dalc', 'Walc', 'health', 'absences', 'Mjob_other',
+       'Fjob_services', 'reason_other', 'reason_reputation',
+       'edusupport_family', 'edusupport_no'],
+      dtype='object')
+Mean squared error      22.903082812499996
+
+In this Experiment, I set the width of the RandomForestRegressor as 100, and iterate that from 1 to the len of then features. 
+Furthermore, I set all the binary attributes as True/False, and normalization for all numeric features.
+Moreover, I use sigmoid for those numeric features. 
+It's supposed to have a better result than Experiment 1, because the features engineering is more reasonable. 
+However, it only gains the better performance on training set, and worse MSE on testing set. 
+So, I'm going to move forward to the next experiment. 
+
+Experiment 3 :
+I adopted feature interaction method in DataParser. 
+>>> Code
+>>> self.data['parents_education'] = self.data['Medu'] * self.data['Fedu']
+>>> self.data['famrel_freetime'] = self.data['famrel'] * self.data['freetime']
+Unfortunately, the result is not better than the previous one. 
+
+Model 1:
+Mean squared error      6.044770087668031
+self.optimized_feature_number = 32
+self.optimized_features = Index(['school', 'sex', 'address', 'traveltime', 'studytime', 'failures',
+       'nursery', 'higher', 'internet', 'romantic', 'goout', 'Dalc', 'Walc',
+       'health', 'Mjob_at_home', 'Mjob_health', 'Mjob_other', 'Fjob_services',
+       'reason_home', 'reason_reputation', 'edusupport_family',
+       'edusupport_no', 'poly_0', 'poly_1', 'poly_2', 'poly_3', 'poly_4',
+       'poly_5', 'poly_6', 'poly_7', 'poly_8', 'poly_9'],
+      dtype='object')
+--------------------
+Model 2:
+Selected features: Index(['school', 'sex', 'address', 'traveltime', 'studytime', 'failures',
+       'nursery', 'higher', 'internet', 'romantic', 'goout', 'Dalc', 'Walc',
+       'health', 'Mjob_at_home', 'Mjob_health', 'Mjob_other', 'Fjob_services',
+       'reason_home', 'reason_reputation', 'edusupport_family',
+       'edusupport_no', 'poly_0', 'poly_1', 'poly_2', 'poly_3', 'poly_4',
+       'poly_5', 'poly_6', 'poly_7', 'poly_8', 'poly_9'],
+      dtype='object')
+Mean squared error      23.26792812499999
+
+
+
+================Task 1================
+Model 1:
+i = 55  Mean squared error      6.0563512478082995
+i = 54  Mean squared error      6.060761396843951
+i = 53  Mean squared error      6.011387749853886
+i = 52  Mean squared error      5.990957498538867
+i = 51  Mean squared error      6.059526186440678
+i = 50  Mean squared error      6.003548217416716
+i = 49  Mean squared error      6.045407819988311
+i = 48  Mean squared error      5.996737624196378
+i = 47  Mean squared error      6.048106043249562
+i = 46  Mean squared error      6.031638334307424
+i = 45  Mean squared error      6.014926744593806
+i = 44  Mean squared error      6.033980020455874
+i = 43  Mean squared error      5.97666385447107
+i = 42  Mean squared error      6.032315271770895
+i = 41  Mean squared error      5.987807387492693
+i = 40  Mean squared error      5.99494748100526
+i = 39  Mean squared error      5.97136098188194
+i = 38  Mean squared error      5.990226116306253
+i = 37  Mean squared error      6.000173705435418
+i = 36  Mean squared error      5.9756161630625355
+i = 35  Mean squared error      6.031738386908241
+i = 34  Mean squared error      5.9802239421391
+i = 33  Mean squared error      5.963601402688487
+i = 32  Mean squared error      5.977769070718878
+i = 31  Mean squared error      6.039895350672121
+i = 30  Mean squared error      6.043569114552893
+i = 29  Mean squared error      6.059676846873174
+i = 28  Mean squared error      6.047331566335475
+i = 27  Mean squared error      6.086767367036822
+i = 26  Mean squared error      6.008405581531268
+i = 25  Mean squared error      6.0106218234950335
+i = 24  Mean squared error      6.02046116014027
+i = 23  Mean squared error      6.055894772063121
+i = 22  Mean squared error      6.108824047340738
+i = 21  Mean squared error      6.076585192869668
+i = 20  Mean squared error      6.0928142226767985
+i = 19  Mean squared error      6.02660815020456
+i = 18  Mean squared error      5.994198693746349
+i = 17  Mean squared error      6.125575286382232
+i = 16  Mean squared error      6.138640169491526
+i = 15  Mean squared error      6.216002784921099
+i = 14  Mean squared error      6.196161186440678
+i = 13  Mean squared error      6.305763997662186
+i = 12  Mean squared error      6.488131011104618
+i = 11  Mean squared error      6.519121621858564
+i = 10  Mean squared error      6.773942493343725
+i = 9   Mean squared error      6.963566617598547
+i = 8   Mean squared error      6.97131872191782
+i = 7   Mean squared error      6.898515772037956
+i = 6   Mean squared error      7.2285272759673544
+i = 5   Mean squared error      8.02525501232898
+i = 4   Mean squared error      8.662909477953084
+i = 3   Mean squared error      8.5977337420643
+i = 2   Mean squared error      7.743998412188061
+i = 1   Mean squared error      7.089611238770128
+Mean squared error      5.963601402688487
+self.optimized_feature_number = 33
+self.optimized_features = Index(['school', 'sex', 'age', 'address', 'studytime', 'failures', 'nursery',
+       'higher', 'internet', 'romantic', 'goout', 'Dalc', 'Walc', 'health',
+       'absences', 'Mjob_health', 'Mjob_other', 'Mjob_services',
+       'Fjob_services', 'reason_home', 'reason_other', 'reason_reputation',
+       'edusupport_family', 'edusupport_no', 'parents_education',
+       'famrel_freetime', 'poly_0', 'poly_1', 'poly_2', 'poly_3', 'poly_6',
+       'poly_8', 'poly_9'],
+      dtype='object')
+--------------------
+Model 2:
+Mean squared error      22.47025625
 
 
