@@ -1,0 +1,60 @@
+================Task 2================
+In task two, I continue to use the feature engineering in Task 1.
+(Including sigmoid, categorical featrures with one hot encoding, True/False for Bool features)
+
+Experiment 1:
+Model 1: SVM
+Results for SVM:
+Accuracy        0.359375        Macro_F1        0.17352941176470588   Macro_Precision  0.21336477987421382     Macro_Recall    0.24586466165413534
+Category        teacher F1      0.2222222222222222      Precision     0.375    Recall  0.15789473684210525
+Category        health  F1      0.0     Precision       0.0     Recall0.0
+Category        service F1      0.5277777777777778      Precision     0.3584905660377358       Recall  1.0
+Category        at_home F1      0.11764705882352941     Precision     0.3333333333333333       Recall  0.07142857142857142
+Category        other   F1      0.0     Precision       0.0     Recall0.0
+Model 1 takes 16.290621757507324 seconds
+Model 2: XGBoost
+Results for XGBoost:
+Accuracy        0.34375 Macro_F1        0.23553571428571426     Macro_Precision        0.33277777777777773     Macro_Recall    0.2545454545454545
+Category        teacher F1      0.34285714285714286     Precision     0.375    Recall  0.3157894736842105
+Category        health  F1      0.0     Precision       0.0     Recall0.0
+Category        service F1      0.40625 Precision       0.28888888888888886    Recall  0.6842105263157895
+Category        at_home F1      0.0     Precision       0.0     Recall0.0
+Category        other   F1      0.42857142857142855     Precision     1.0      Recall  0.2727272727272727
+Model 2 takes 352.0835247039795 seconds
+
+
+In SVM, I tried to use different parameter like this:
+param_grid = {
+        'svc__C': [0.01, 0.1, 1, 10, 100, 1000],
+        'svc__gamma': [0.001, 0.01, 0.1, 1, 10, 'scale', 'auto'],
+        'svc__kernel': ['rbf', 'poly', 'sigmoid']
+    }
+But the performance is worse, so I remain the original one as the final result. 
+
+In XGBoost, I use the parameters as below:
+param_grid = {
+            'n_estimators': [100, 200, 300],  # Number of gradient boosted trees. Equivalent to number of boosting rounds
+            'learning_rate': [0.01, 0.1, 0.3],  # Boosting learning rate (xgb’s “eta”)
+            'max_depth': [3, 6, 9],  # Maximum depth of a tree. Increasing this value will make the model more complex and more likely to overfit
+            'subsample': [0.8, 1.0],  # Subsample ratio of the training instances
+            'colsample_bytree': [0.8, 1.0],  # Subsample ratio of columns when constructing each tree
+        }
+
+However, I thought the performance is not good enough, so I did some change in Experiment 2.
+
+Experiment 2:
+
+Model 2: XGBoost with SMOTE
+Results for XGBoost with SMOTE:
+Accuracy        0.375   Macro_F1        0.24098708309234623     Macro_Precision 0.3501144164759725      Macro_Recall    0.2679425837320574
+Category        teacher F1      0.47619047619047616     Precision       0.43478260869565216     Recall  0.5263157894736842
+Category        health  F1      0.0     Precision       0.0     Recall  0.0
+Category        service F1      0.42105263157894735     Precision       0.3157894736842105      Recall  0.631578947368421
+Category        at_home F1      0.0     Precision       0.0     Recall  0.0
+Category        other   F1      0.3076923076923077      Precision       1.0     Recall  0.18181818181818182
+Model 2 takes 234.76652789115906 seconds
+
+Due to the imbalanced data distribution, I use SMOTE and RandomizedSearchCV techique in XGBoost. 
+This time, I got a better performance although the helth and at_home categories are still having 0% of Accuracy. 
+
+

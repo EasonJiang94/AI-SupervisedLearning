@@ -81,7 +81,7 @@ class Task2:
         }
         
         # Randomized search on hyperparameters
-        random_search = RandomizedSearchCV(pipeline, param_distributions=param_dist, n_iter=25, scoring='accuracy', cv=10, verbose=3, random_state=42)
+        random_search = RandomizedSearchCV(pipeline, param_distributions=param_dist, n_iter=25, scoring='accuracy', cv=10, verbose=0, random_state=42)
         
         # Fit the model
         random_search.fit(self.X_train, self.y_train)
