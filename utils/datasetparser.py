@@ -4,7 +4,7 @@ from sklearn.preprocessing import PolynomialFeatures
 
 
 def sigmoid(x):
-    return 2 / (1 + np.exp(-x)) - 1
+    return 3*(2 / (1 + np.exp(-x)) - 1)
 
 class DatasetParser(object):
     columns = [
@@ -90,6 +90,38 @@ class DatasetParser(object):
 
         features_to_remove = ['Medu', 'Fedu', 'famrel', 'freetime'] 
         self.data.drop(columns=features_to_remove, inplace=True)
+
+class DatasetParserTask2(DatasetParser):
+    def __init__(self, path):
+        self.path = path
+        self.data = pd.read_csv(path, sep="\t", header=None, names=DatasetParser.columns)
+        self._convert_binary_to_boolean()
+        self._apply_one_hot_encoding()
+        self._normalize_data()
+        self._feature_interaction_and_polynomial_features()
+    
+    def _feature_interaction_and_polynomial_features(self):
+        self.data['famrel_freetime'] = self.data['famrel'] * self.data['freetime']
+        
+        continuous_features = ['age', 'traveltime', 'studytime', 'absences']
+        pf = PolynomialFeatures(degree=2, include_bias=False)
+        
+
+        continuous_data = self.data[continuous_features]
+        poly_features = pf.fit_transform(continuous_data)
+        
+        poly_features = np.delete(poly_features, [i for i in range(len(continuous_features))], axis=1)
+        
+        for i in range(poly_features.shape[1]):
+            self.data[f'poly_{i}'] = poly_features[:, i]
+
+        features_to_remove = ['Medu', 'famrel', 'freetime'] 
+        self.data.drop(columns=features_to_remove, inplace=True)
+    
+    def _remove_useless_features(self):
+        features_to_remove = [] 
+        self.data.drop(columns=features_to_remove, inplace=True)
+
 
 if __name__ == "__main__":
     # train = "data/assign3_students_train.txt"

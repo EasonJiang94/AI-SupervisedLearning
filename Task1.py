@@ -22,18 +22,18 @@ class Task1:
         print("================Task 1================")
         self.train_data = DatasetParser(Task1.TRAIN_SET_PATH).data
         self.test_data = DatasetParser(Task1.TEST_SET_PATH).data        
-        
+        self.optimized_feature_number = 37
     
     def train(self, X, y, n=27):
         # Identifying categorical columns to be one-hot encoded
 
-        base_model = RandomForestRegressor(n_estimators=100, random_state=42)
+        base_model = RandomForestRegressor(n_estimators=150, random_state=42)
         rfe = RFE(estimator=base_model, n_features_to_select=n)
         rfe.fit(X, y)
         selected_features = X.columns[rfe.support_]
         #print("Selected features:", selected_features)
         X_selected = X[selected_features]
-        model = RandomForestRegressor(n_estimators=100, random_state=42)
+        model = RandomForestRegressor(n_estimators=150, random_state=42)
         model.fit(X_selected, y)
         return model, selected_features
         
@@ -44,9 +44,9 @@ class Task1:
         X = self.train_data.drop('G3', axis=1)
         y = self.train_data['G3']
         min_avg_mse = 99999999
-        self.optimized_feature_number = -1
+        # self.optimized_feature_number = -1
         self.optimized_features = None
-        for i in reversed(range(1, len(X.columns)+1)):
+        for i in range(self.optimized_feature_number, self.optimized_feature_number + 1):
             model, selected_features = self.train(X, y, i)
             scores = cross_val_score(model, X[selected_features], y, cv=10, scoring='neg_mean_squared_error')
             mse_scores = -scores
@@ -57,10 +57,10 @@ class Task1:
                 min_avg_mse = average_mse
                 self.optimized_feature_number = i
                 self.optimized_features = selected_features
-            print(f"{i = }\tMean squared error\t" + str(average_mse))
+            # print(f"{i = }\tMean squared error\t" + str(average_mse))
         print(f"Mean squared error\t" + str(min_avg_mse))
-        print(f"{self.optimized_feature_number = }")
-        print(f"{self.optimized_features = }")
+        # print(f"{self.optimized_feature_number = }")
+        # print(f"{self.optimized_features = }")
         return
 
     def model_2_run(self):

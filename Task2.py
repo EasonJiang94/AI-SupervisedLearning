@@ -39,3 +39,9 @@ class Task2:
         for category in categories:
             self.print_category_results(category, 0.0, 0.0, 0.0)
         return
+
+
+if __name__ == "__main__":
+    task_2 = Task2()
+    task_2.model_1_run()
+    task_2.model_2_run()
