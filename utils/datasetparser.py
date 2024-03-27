@@ -92,9 +92,13 @@ class DatasetParser(object):
         self.data.drop(columns=features_to_remove, inplace=True)
 
 class DatasetParserTask2(DatasetParser):
+    non_binary_categorical_columns = [
+        "Fjob", "reason", "guardian", "edusupport"  
+    ]
     def __init__(self, path):
         self.path = path
         self.data = pd.read_csv(path, sep="\t", header=None, names=DatasetParser.columns)
+        # self.data.drop(columns=['Mjob'], inplace=True)
         self._convert_binary_to_boolean()
         self._apply_one_hot_encoding()
         self._normalize_data()
@@ -128,7 +132,7 @@ if __name__ == "__main__":
     # parser = DatasetParser(train)
     # print(parser.data.info())
     test = "data/assign3_students_test.txt"
-    parser = DatasetParser(test)
+    parser = DatasetParserTask2(test)
     print(parser.data.info())
     # train = "data/assign3_students_train.txt"
     # test = "data/assign3_students_test.txt"
