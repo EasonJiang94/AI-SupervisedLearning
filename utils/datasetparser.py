@@ -77,6 +77,7 @@ class DatasetParser(object):
         self.data['famrel_freetime'] = self.data['famrel'] * self.data['freetime']
         
         continuous_features = ['age', 'traveltime', 'studytime', 'absences']
+        
         pf = PolynomialFeatures(degree=2, include_bias=False)
         
 

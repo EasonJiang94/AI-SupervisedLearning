@@ -104,11 +104,16 @@ However, it only gains the better performance on training set, and worse MSE on 
 So, I'm going to move forward to the next experiment. 
 
 Experiment 3 :
+
+*********************
 I adopted feature interaction method in DataParser. 
 >>> Code
 >>> self.data['parents_education'] = self.data['Medu'] * self.data['Fedu']
 >>> self.data['famrel_freetime'] = self.data['famrel'] * self.data['freetime']
+Because I think the parents_education should influence childrend together. 
+Also, famrel_freetime means the quality of students' hometime.
 Unfortunately, the result is not better than the previous one. 
+*********************
 
 Model 1 average validation MSE:
 Mean squared error      6.044770087668031
@@ -301,7 +306,7 @@ So, I would choose Experiment 5 as the best model for RandomForestRegressor.
 
 Model 2 Experiment : 
 
-Experiment 1 :
+Experiment 1 for SVM :
 I use SVM as model 2. 
 The parameters are as below : 
         svm_pipeline = make_pipeline(StandardScaler(), SVR(kernel='rbf', C=1.0, epsilon=0.2))
@@ -314,3 +319,19 @@ Test MSE for SVM: 22.81056209753233
 Model 2 takes 0.056509971618652344 seconds
 
 It is worse than model 1, so I'm going to try to improve it in Experiment 2.
+
+Experiment 2 for SVM : 
+
+Best average MSE from CV: 6.123985246912502
+Test MSE for best SVM model: 22.683076794979502
+Model 2 takes 111.27515578269958 seconds
+
+This time, I tried the parameters as below :
+parameters = {
+            'svr__C': [0.1, 1, 10],
+            'svr__epsilon': [0.01, 0.1, 0.5],
+            'svr__kernel': ['rbf', 'linear', 'poly'],
+            'svr__gamma': ['scale', 'auto']
+        }
+I also use sklearn.pipeline and Grid Search with Cross-Validation.
+It's better than the previous SVM model, but it's still worse than the RandomForestRegressor model. 

@@ -5,6 +5,8 @@ from sklearn.feature_selection import RFE
 from sklearn.svm import SVR
 from sklearn.model_selection import cross_val_score
 from sklearn.preprocessing import StandardScaler
+from sklearn.model_selection import GridSearchCV
+
 from sklearn.pipeline import make_pipeline
 from sklearn.preprocessing import OneHotEncoder, MinMaxScaler
 from sklearn.compose import ColumnTransformer
@@ -90,27 +92,41 @@ class Task1:
         return
     
     def train_svm_and_evaluate(self, X_train, y_train):
-        svm_pipeline = make_pipeline(StandardScaler(), SVR(kernel='rbf', C=1.0, epsilon=0.2))
+        pipeline = Pipeline([
+            ('scaler', StandardScaler()),
+            ('svr', SVR())
+        ])
         
-        neg_mse_scores = cross_val_score(svm_pipeline, X_train, y_train, cv=10, scoring='neg_mean_squared_error')
-        mse_scores = -neg_mse_scores  
-        average_mse = np.mean(mse_scores)
-        print(f"Average validation MSE for SVM: {average_mse*400}")
+        parameters = {
+            'svr__C': [0.1, 1, 10],
+            'svr__epsilon': [0.01, 0.1, 0.5],
+            'svr__kernel': ['rbf', 'linear', 'poly'],
+            'svr__gamma': ['scale', 'auto']
+        }
         
-        svm_pipeline.fit(X_train, y_train)
-        return svm_pipeline
+        grid_search = GridSearchCV(pipeline, parameters, cv=10, scoring='neg_mean_squared_error', verbose=1)
+        grid_search.fit(X_train, y_train)
+
+        best_model = grid_search.best_estimator_
+        print(f"Best parameters: {grid_search.best_params_}")
+        print(f"Best average MSE from CV: {-grid_search.best_score_*400}")
+
+        return best_model
 
     def model_2_run(self):
+        # Prepare your data
         X_train = self.train_data.drop('G3', axis=1)
         y_train = self.train_data['G3']
         X_test = self.test_data.drop('G3', axis=1)
         y_test = self.test_data['G3']
+
+        # Train and evaluate the model
+        best_svm_model = self.train_svm_and_evaluate(X_train, y_train)
         
-        svm_model = self.train_svm_and_evaluate(X_train, y_train)
-        
-        y_pred = svm_model.predict(X_test)
+        # Make predictions on the test set
+        y_pred = best_svm_model.predict(X_test)
         test_mse = mean_squared_error(y_test, y_pred)
-        print(f"Test MSE for SVM: {test_mse*400}")
+        print(f"Test MSE for best SVM model: {test_mse*400}")
 
 
 if __name__ == "__main__":
