@@ -296,3 +296,21 @@ The selected features are :
 poly_0 to poly_9 are the 2-degree polynomials of ['age', 'traveltime', 'studytime', 'absences'].
 
 So, I would choose Experiment 5 as the best model for RandomForestRegressor.
+
+
+
+Model 2 Experiment : 
+
+Experiment 1 :
+I use SVM as model 2. 
+The parameters are as below : 
+        svm_pipeline = make_pipeline(StandardScaler(), SVR(kernel='rbf', C=1.0, epsilon=0.2))
+        neg_mse_scores = cross_val_score(svm_pipeline, X_train, y_train, cv=10, scoring='neg_mean_squared_error')
+
+And the result is :
+
+Average validation MSE for SVM: 6.755171228349595
+Test MSE for SVM: 22.81056209753233
+Model 2 takes 0.056509971618652344 seconds
+
+It is worse than model 1, so I'm going to try to improve it in Experiment 2.
