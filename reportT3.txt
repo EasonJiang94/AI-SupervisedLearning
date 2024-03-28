@@ -1,0 +1,29 @@
+================Task 3================
+Experiment 1 : 
+I use Logistic Regression with One vs Rest as the model 1
+and Decision Tree with One vs Rest as model 2. 
+
+Meanwhile, I use ['goout', 'Dalc', 'Walc'] to build up the polynomial features
+
+--------------------
+Model 1: Logistic Regression with One-vs-Rest
+Accuracy: 0.40625       Hamming loss: 0.28515625
+Model 1 takes 0.06983232498168945 seconds
+--------------------
+Model 2: Decision Tree with One-vs-Rest
+Accuracy: 0.25  Hamming loss: 0.29296875
+Model 2 takes 0.06646084785461426 seconds
+
+By the way, the reusult without those polynomials are:
+Model 1: Logistic Regression with One-vs-Rest
+Accuracy: 0.359375      Hamming loss: 0.296875
+Model 1 takes 0.08300399780273438 seconds
+--------------------
+Model 2: Decision Tree with One-vs-Rest
+Accuracy: 0.203125      Hamming loss: 0.296875
+Model 2 takes 0.01787114143371582 seconds
+
+*** So, the polynomials are important. ***
+
+I will try to use other feature engineering in the next experiment.
+

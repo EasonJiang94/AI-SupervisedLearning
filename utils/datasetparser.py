@@ -69,7 +69,6 @@ class DatasetParser(object):
         
         self.data['absences'] = (self.data['absences'] - DatasetParser.range_info['absences']["min"]) / (DatasetParser.range_info['absences']["max"] - DatasetParser.range_info['absences']["min"])
         
-        # 将G3归一化到0到1之间
         self.data['G3'] = (self.data['G3'] - DatasetParser.range_info['G3']["min"]) / (DatasetParser.range_info['G3']["max"] - DatasetParser.range_info['G3']["min"])
     
     def _feature_interaction_and_polynomial_features(self):
@@ -127,6 +126,49 @@ class DatasetParserTask2(DatasetParser):
         features_to_remove = [] 
         self.data.drop(columns=features_to_remove, inplace=True)
 
+class DatasetParserTask3(DatasetParser):
+    
+    non_binary_categorical_columns = [
+        "Mjob", "Fjob", "reason", "guardian"  
+    ]
+    def __init__(self, path):
+        self.path = path
+        self.data = pd.read_csv(path, sep="\t", header=None, names=DatasetParser.columns)
+        # self.data.drop(columns=['Mjob'], inplace=True)
+        self._convert_binary_to_boolean()
+        self._apply_one_hot_encoding()
+        self._normalize_data()
+        self._feature_interaction_and_polynomial_features()
+
+    def _feature_interaction_and_polynomial_features(self):
+        # self.data['famrel_freetime'] = self.data['famrel'] * self.data['freetime']
+        
+        continuous_features = ['goout', 'Dalc', 'Walc', 'freetime']
+        pf = PolynomialFeatures(degree=3, include_bias=False)
+        
+
+        continuous_data = self.data[continuous_features]
+        poly_features = pf.fit_transform(continuous_data)
+        
+        poly_features = np.delete(poly_features, [i for i in range(len(continuous_features))], axis=1)
+        
+        for i in range(poly_features.shape[1]):
+            self.data[f'Poly_goout_Dalc_Walc_{i}'] = poly_features[:, i]
+
+        # continuous_features = ['Fedu', 'Medu', 'famrel', ]
+        # pf = PolynomialFeatures(degree=3, include_bias=True)
+        
+
+        # continuous_data = self.data[continuous_features]
+        # poly_features = pf.fit_transform(continuous_data)
+        
+        # poly_features = np.delete(poly_features, [i for i in range(len(continuous_features))], axis=1)
+        
+        # for i in range(poly_features.shape[1]):
+        #     self.data[f'Fedu_Medu_famrel_freetime_{i}'] = poly_features[:, i]
+
+        features_to_remove = ['Medu', 'famrel', 'freetime'] 
+        self.data.drop(columns=features_to_remove, inplace=True)
 
 if __name__ == "__main__":
     # train = "data/assign3_students_train.txt"
