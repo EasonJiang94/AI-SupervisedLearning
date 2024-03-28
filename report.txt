@@ -1,10 +1,15 @@
 ================Task 1================
+Model 1 average validation MSE:
+Mean squared error      5.90529359049289
+--------------------
+Modle 1 testing MES:
+Mean squared error      22.140613888888875
 
 Experiment 1 : 
-Model 1:
+Model 1 average validation MSE:
 i = 23	Mean squared error	6.050370379164231
 --------------------
-Model 2:
+Modle 1 testing MES:
 i = 23	Mean squared error	22.250283203125
 
 >> In this task, I use RandomForestRegressor as the regression model. 
@@ -25,7 +30,7 @@ i = 23	Mean squared error	22.250283203125
 
 Experiment 2 : 
 ================Task 1================
-Model 1:
+Model 1 average validation MSE:
 i = 1   Mean squared error      7.089611238770128
 i = 2   Mean squared error      7.637682075498438
 i = 3   Mean squared error      7.746573946079392
@@ -82,7 +87,7 @@ self.optimized_features = Index(['school', 'sex', 'age', 'address', 'Medu', 'Fed
        'edusupport_family', 'edusupport_no'],
       dtype='object')
 --------------------
-Model 2:
+Modle 1 testing MES:
 Selected features: Index(['school', 'sex', 'age', 'address', 'Medu', 'Fedu', 'traveltime',
        'studytime', 'failures', 'higher', 'internet', 'romantic', 'famrel',
        'freetime', 'goout', 'Dalc', 'Walc', 'health', 'absences', 'Mjob_other',
@@ -105,7 +110,7 @@ I adopted feature interaction method in DataParser.
 >>> self.data['famrel_freetime'] = self.data['famrel'] * self.data['freetime']
 Unfortunately, the result is not better than the previous one. 
 
-Model 1:
+Model 1 average validation MSE:
 Mean squared error      6.044770087668031
 self.optimized_feature_number = 32
 self.optimized_features = Index(['school', 'sex', 'address', 'traveltime', 'studytime', 'failures',
@@ -116,7 +121,7 @@ self.optimized_features = Index(['school', 'sex', 'address', 'traveltime', 'stud
        'poly_5', 'poly_6', 'poly_7', 'poly_8', 'poly_9'],
       dtype='object')
 --------------------
-Model 2:
+Modle 1 testing MES:
 Selected features: Index(['school', 'sex', 'address', 'traveltime', 'studytime', 'failures',
        'nursery', 'higher', 'internet', 'romantic', 'goout', 'Dalc', 'Walc',
        'health', 'Mjob_at_home', 'Mjob_health', 'Mjob_other', 'Fjob_services',
@@ -127,9 +132,13 @@ Selected features: Index(['school', 'sex', 'address', 'traveltime', 'studytime',
 Mean squared error      23.26792812499999
 
 
-
+Experiment 4 :
+I fount that Experiment 3 removes the continuous numeric features becaues of the generated polys. 
+However, thouse features are still important to the prediction model.
+So, I gain the validation MSE 5.963601402688487
+and the testing MSE : 22.47025625
 ================Task 1================
-Model 1:
+Model 1 average validation MSE:
 i = 55  Mean squared error      6.0563512478082995
 i = 54  Mean squared error      6.060761396843951
 i = 53  Mean squared error      6.011387749853886
@@ -196,7 +205,94 @@ self.optimized_features = Index(['school', 'sex', 'age', 'address', 'studytime',
        'poly_8', 'poly_9'],
       dtype='object')
 --------------------
-Model 2:
+Modle 1 testing MES:
 Mean squared error      22.47025625
 
+Experiment 5:
+I adjusted the RandomForestRegressor width to 150, and the better performance came out.
 
+================Task 1================
+Model 1 average validation MSE:
+i = 55  Mean squared error      6.002412625495162
+i = 54  Mean squared error      5.995953956750438
+i = 53  Mean squared error      5.988410261705304
+i = 52  Mean squared error      5.97089927917397
+i = 51  Mean squared error      6.006413642444313
+i = 50  Mean squared error      5.990333684005453
+i = 49  Mean squared error      5.999444157412819
+i = 48  Mean squared error      5.934936829664263
+i = 47  Mean squared error      6.023534932138451
+i = 46  Mean squared error      6.0090135437366055
+i = 45  Mean squared error      5.9612602883304096
+i = 44  Mean squared error      5.9846670744853565
+i = 43  Mean squared error      5.953669659068771
+i = 42  Mean squared error      5.934790321449446
+i = 41  Mean squared error      5.95715003052146
+i = 40  Mean squared error      5.961272578738878
+i = 39  Mean squared error      5.927957117994675
+i = 38  Mean squared error      5.932256206247158
+i = 37  Mean squared error      5.90529359049289
+i = 36  Mean squared error      5.926982214429508
+i = 35  Mean squared error      5.959625719851937
+i = 34  Mean squared error      5.930425161374113
+i = 33  Mean squared error      5.992210183778167
+i = 32  Mean squared error      5.955237155659456
+i = 31  Mean squared error      6.0112496253003425
+i = 30  Mean squared error      6.033933876225729
+i = 29  Mean squared error      5.990675837392036
+i = 28  Mean squared error      6.008592068316122
+i = 27  Mean squared error      5.949876129618806
+i = 26  Mean squared error      5.958884330151308
+i = 25  Mean squared error      5.983731511137085
+i = 24  Mean squared error      6.029017429703229
+i = 23  Mean squared error      6.0264722176764725
+i = 22  Mean squared error      6.031916182869017
+i = 21  Mean squared error      6.0545817858302495
+i = 20  Mean squared error      6.090888174556789
+i = 19  Mean squared error      6.025706386128969
+i = 18  Mean squared error      5.975460383141764
+i = 17  Mean squared error      6.08435013182674
+i = 16  Mean squared error      6.2645328982401445
+i = 15  Mean squared error      6.282300540294823
+i = 14  Mean squared error      6.277306030261705
+i = 13  Mean squared error      6.355296960841613
+i = 12  Mean squared error      6.488747114747712
+i = 11  Mean squared error      6.729910427073113
+i = 10  Mean squared error      6.615533820372176
+i = 9   Mean squared error      6.786782114727063
+i = 8   Mean squared error      6.743578447032296
+i = 7   Mean squared error      6.907802311646137
+i = 6   Mean squared error      7.157236917805088
+i = 5   Mean squared error      8.006904046837553
+i = 4   Mean squared error      8.656105489326261
+i = 3   Mean squared error      8.559301682496898
+i = 2   Mean squared error      7.700061717737592
+i = 1   Mean squared error      7.08681324204327
+Mean squared error      5.90529359049289
+self.optimized_feature_number = 37
+self.optimized_features = Index(['school', 'sex', 'age', 'address', 'famsize', 'studytime', 'failures',
+       'nursery', 'higher', 'internet', 'romantic', 'goout', 'Dalc', 'Walc',
+       'health', 'absences', 'Mjob_at_home', 'Mjob_health', 'Mjob_other',
+       'Mjob_services', 'Fjob_services', 'reason_course', 'reason_home',
+       'reason_other', 'reason_reputation', 'edusupport_family',
+       'edusupport_no', 'parents_education', 'famrel_freetime', 'poly_0',
+       'poly_1', 'poly_2', 'poly_3', 'poly_5', 'poly_6', 'poly_8', 'poly_9'],
+      dtype='object')
+--------------------
+Modle 1 testing MES:
+Mean squared error      22.140613888888875
+
+Summary : 
+Among these five experiments, Experiment 5 has the lowest validation MSE and testing MSE.
+The selected features are : 
+['school', 'sex', 'age', 'address', 'famsize', 'studytime', 'failures',
+    'nursery', 'higher', 'internet', 'romantic', 'goout', 'Dalc', 'Walc',
+    'health', 'absences', 'Mjob_at_home', 'Mjob_health', 'Mjob_other',
+    'Mjob_services', 'Fjob_services', 'reason_course', 'reason_home',
+    'reason_other', 'reason_reputation', 'edusupport_family',
+    'edusupport_no', 'parents_education', 'famrel_freetime', 'poly_0',
+    'poly_1', 'poly_2', 'poly_3', 'poly_5', 'poly_6', 'poly_8', 'poly_9']
+
+poly_0 to poly_9 are the 2-degree polynomials of ['age', 'traveltime', 'studytime', 'absences'].
+
+So, I would choose Experiment 5 as the best model for RandomForestRegressor.

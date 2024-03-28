@@ -2,7 +2,10 @@
 # Task 1: Regression task 
 from sklearn.model_selection import train_test_split
 from sklearn.feature_selection import RFE
-
+from sklearn.svm import SVR
+from sklearn.model_selection import cross_val_score
+from sklearn.preprocessing import StandardScaler
+from sklearn.pipeline import make_pipeline
 from sklearn.preprocessing import OneHotEncoder, MinMaxScaler
 from sklearn.compose import ColumnTransformer
 from sklearn.pipeline import Pipeline
@@ -12,7 +15,7 @@ from sklearn.metrics import mean_squared_error
 from sklearn.model_selection import cross_val_score
 import numpy as np
 from utils.datasetparser import DatasetParser
-
+import time
 
 class Task1:
     # please feel free to create new python files, adding functions and attributes to do training, validation, testing
@@ -23,6 +26,10 @@ class Task1:
         self.train_data = DatasetParser(Task1.TRAIN_SET_PATH).data
         self.test_data = DatasetParser(Task1.TEST_SET_PATH).data        
         self.optimized_feature_number = 37
+        missing_cols = set(self.train_data.columns) - set(self.test_data.columns)
+        for c in missing_cols:
+            self.test_data[c] = False
+        self.test_data = self.test_data[self.train_data.columns]
     
     def train(self, X, y, n=27):
         # Identifying categorical columns to be one-hot encoded
@@ -58,13 +65,14 @@ class Task1:
                 self.optimized_feature_number = i
                 self.optimized_features = selected_features
             # print(f"{i = }\tMean squared error\t" + str(average_mse))
-        print(f"Mean squared error\t" + str(min_avg_mse))
+        print(f"Average validation Mean squared error\t" + str(min_avg_mse))
         # print(f"{self.optimized_feature_number = }")
         # print(f"{self.optimized_features = }")
+        self.model_1_test()
         return
 
-    def model_2_run(self):
-        print("--------------------\nModel 2:")
+    def model_1_test(self):
+        print("--------------------\nTest for Model 1:")
         # Train the model 2 with your best hyper parameters (if have) and features on training data.
         X = self.train_data.drop('G3', axis=1)
         y = self.train_data['G3']
@@ -80,9 +88,36 @@ class Task1:
         # Evaluate learned model on testing data, and print the results.
         print(f"Mean squared error\t" + str(mse))
         return
+    
+    def train_svm_and_evaluate(self, X_train, y_train):
+        svm_pipeline = make_pipeline(StandardScaler(), SVR(kernel='rbf', C=1.0, epsilon=0.2))
+        
+        neg_mse_scores = cross_val_score(svm_pipeline, X_train, y_train, cv=10, scoring='neg_mean_squared_error')
+        mse_scores = -neg_mse_scores  
+        average_mse = np.mean(mse_scores)
+        print(f"Average validation MSE for SVM: {average_mse*400}")
+        
+        svm_pipeline.fit(X_train, y_train)
+        return svm_pipeline
+
+    def model_2_run(self):
+        X_train = self.train_data.drop('G3', axis=1)
+        y_train = self.train_data['G3']
+        X_test = self.test_data.drop('G3', axis=1)
+        y_test = self.test_data['G3']
+        
+        svm_model = self.train_svm_and_evaluate(X_train, y_train)
+        
+        y_pred = svm_model.predict(X_test)
+        test_mse = mean_squared_error(y_test, y_pred)
+        print(f"Test MSE for SVM: {test_mse*400}")
 
 
 if __name__ == "__main__":
     t1 = Task1()
+    start_time = time.time()
     t1.model_1_run()
+    print(f"Model 1 takes {time.time() - start_time} seconds")
+    start_time = time.time()
     t1.model_2_run()
+    print(f"Model 2 takes {time.time() - start_time} seconds")
